@@ -1,0 +1,21 @@
+Pintaboard is a plugin for [[http://5digits.org/pentadactyl/][Pentadactyl]] that replaces the build-in
+bookmarking storage with service to Pinboard.in.
+
+
+* Installation
+
+  From [[http://5digits.org/pentadactyl/plugins][the pentadactyl plugin page]]: 
+
+: Install these plugins by copying them to the  ~/.pentadactyl/plugins/ directory
+: (or %USERPROFILE%\pentadactyl\plugins on Windows).
+
+* Setup
+
+  The setup is simple at this point. First, install the plugin as
+  instructed above.  Next, you will need to provide your pinboard.in
+  API token as a setting.
+
+  This API token can be found on your settings/password page.  For
+  more, see [[http://blog.pinboard.in/2012/07/api_authentication_tokens/][this blog post]].
+
+* Usage
