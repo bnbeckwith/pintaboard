@@ -51,8 +51,9 @@ var INFO =
 </plugin>;
 
 let pintags = null;
-let pinurladd  = "/v1/posts/add?";
-let pinurltags = "/v1/tags/get";
+let pinurladd     = "/v1/posts/add";
+let pinurltags    = "/v1/tags/get";
+let pinurlsuggest = "/v1/posts/suggest";
 
 group.options.add(["pintaboardURL"],
 	    "Base url for Pintaboard",
@@ -64,18 +65,10 @@ group.options.add(["pintaboardKey"],
 		  "Key for storing a pinboard link",
 		  "string", "a")
 		  
-
-function pinHttpGet(url, callback){
-    pinSecureGet(url, callback);
-}
-
-function pinUserPasswordEncoded() {
-    let s = options['pintaboardUser'] +
-	":" + options['pintaboardPassword'];
-    return window.btoa(s);
-}
-
-function pinSecureGet(url, callback){
+function pinHttpsGet(path, opts, callback){
+    opts.push( "auth_token=" + options['pintaboardToken']);
+    let req = 'https://' + options['pintaboardURL'] + path + "?" + opts.join('&');
+//    alert(req);
     try {
 	let xmlhttp = services.Xmlhttp();
 	if (callback)
@@ -83,15 +76,13 @@ function pinSecureGet(url, callback){
 		if (xmlhttp.readyState == 4)
 		    callback(xmlhttp);
 	    }
-	xmlhttp.open("GET", url, !!callback);
-	var auth = "Basic " + pinUserPasswordEncoded();
-	xmlhttp.setRequestHeader("Authorization", auth);
+	xmlhttp.open("GET", req, !!callback);
 	xmlhttp.send(null);
 	return xmlhttp;
     }
     catch(e) {
 	util.dactyl.log("Error opening " +
-			String.quote(url) + ": "
+			String.quote(req) + ": "
 			+ e, 1);
 	return null
     }
@@ -107,11 +98,21 @@ function pinTagData(xmlhttp){
     }
 }
 
+function pinSuggestTagData(ctx, url){
+    pinHttpsGet(pinurlsuggest,
+		["url=" + encodeURIComponent(url)],
+		function(xmlhttp){
+		    let elms = xmlhttp.responseXML.getElementsByTagName("recommended");
+		    let tags = [];
+		    for (var i=0; i< elms.length; i++){
+			var o = {tag: elms[i].firstChild.nodeValue };
+			tags.push(o);
+			}
+		    ctx.completions=tags;
+		    });}
+
 function pinUpdateTags(){
-    let url = "https://" + 
-	options["pintaboardUser"] + ":" + options["pintaboardPassword"] + "@" +
-	options["pintaboardURL"] + pinurltags;
-    pinHttpGet(url,pinTagData);
+    pinHttpsGet(pinurltags,[],pinTagData);
 }
 
 function pinCompleteBookmark(context, args){
@@ -132,26 +133,42 @@ function pinAddBookmark(args) {
 	title: args["-title"] || (args.length === 0 ? buffer.title : null),
 	url: args.length === 0 ? buffer.URL: args[0]
     };
-    let url = "https://" + options["pintaboardURL"] + pinurladd;
-    url += "url=" + encodeURIComponent(opts['url']);
-    url += "&description=" + encodeURIComponent(opts['title']);
-    url += "&tags=" + encodeURIComponent(opts['tags'].join(" "));
-    url += "&extended=" + encodeURIComponent(opts['desc']);
+    let urlopts = ["url=" + encodeURIComponent(opts['url']),
+		   "description=" + encodeURIComponent(opts['title']),
+		   "tags=" + encodeURIComponent(opts['tags'].join(" ")),
+		   "extended=" + encodeURIComponent(opts['desc'])];
 
-    pinHttpGet(url, 
-	       function (xmlhttp) {
-		   dactyl.echomsg(
-		       { domains: [util.getHost(opts.url)], 
-			 message: "Added bookmark: " + opts.url
-		       }, 1, commandline.FORCE_SINGLELINE);
-		   pinUpdateTags(); });
+    pinHttpsGet(pinurladd,
+		urlopts,
+		function (xmlhttp) {
+		    dactyl.echomsg(
+			{ domains: [util.getHost(opts.url)], 
+			  message: "Added bookmark: " + opts.url
+			}, 1, commandline.FORCE_SINGLELINE);
+		    pinUpdateTags(); });
+}
+
+function pinSuggestTags(url){
+
+    return function (ctx, args){
+	ctx.message = "Suggested Tags";
+	ctx.title = ["Suggested Tags"];
+	ctx.keys = { text: "tag", description: "tag" };
+	pinSuggestTagData(ctx,url);
+	return;}
+}
+
+function pinStoredTags(ctx, args){
+    ctx.message     = "Stored Tags";
+    ctx.title       = ["Stored Tags", "Count"];
+    ctx.keys        = { text: "tag", description: "count" };
+    ctx.completions = pintags;
+    return;    
 }
 
 function pinCompleteTags(ctx, args){
-    ctx.message     = "Stored Tags";
-    ctx.title       = ["TAG", "COUNT"];
-    ctx.keys        = { text: "tag", description: "count" };
-    ctx.completions = pintags;
+    ctx.fork("suggested",0,null,pinSuggestTags(args));
+    ctx.fork("stored",0,null,pinStoredTags);
     return;
 }
 
@@ -161,7 +178,7 @@ function initPintaboard() {
     const pintagarg = {
 	names: ["-tags", "-T"],
 	description: "A comma-separated list of tags",
-	completer: pinCompleteTags,
+	completer: pinCompleteTags, 
 	type: CommandOption.LIST
     };
     
