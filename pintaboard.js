@@ -2,7 +2,7 @@
 XML.ignoreWhitespace = false;
 XML.prettyPrinting = false;
 var INFO =
-<plugin name="pintaboard" version="1.0"
+<plugin name="pintaboard" version="1.2"
         href="http://bnbeckwith.com/"
         summary="Pinboard bookmark storage"
         xmlns={NS}>
@@ -51,6 +51,7 @@ var INFO =
 </plugin>;
 
 let pintags = null;
+let pinsuggestcache = [];
 let pinurladd     = "/v1/posts/add";
 let pinurltags    = "/v1/tags/get";
 let pinurlsuggest = "/v1/posts/suggest";
@@ -68,7 +69,6 @@ group.options.add(["pintaboardKey"],
 function pinHttpsGet(path, opts, callback){
     opts.push( "auth_token=" + options['pintaboardToken']);
     let req = 'https://' + options['pintaboardURL'] + path + "?" + opts.join('&');
-//    alert(req);
     try {
 	let xmlhttp = services.Xmlhttp();
 	if (callback)
@@ -99,18 +99,28 @@ function pinTagData(xmlhttp){
 }
 
 function pinSuggestTagData(ctx, url){
-    pinHttpsGet(pinurlsuggest,
-		["url=" + encodeURIComponent(url)],
-		function(xmlhttp){
-		    let elms = xmlhttp.responseXML.getElementsByTagName("recommended");
-		    let tags = [];
-		    for (var i=0; i< elms.length; i++){
-			var o = {tag: elms[i].firstChild.nodeValue };
-			tags.push(o);
+    // Here I need to cache the url and suggestions for a period of
+    // time This is really just so that when I type and get
+    // suggestions, I am not hammering the pinboard api.
+    if(pinsuggestcache[url]==undefined){
+	pinHttpsGet(pinurlsuggest,
+		    ["url=" + encodeURIComponent(url)],
+		    function(xmlhttp){
+			let elms = xmlhttp.responseXML.getElementsByTagName("recommended");
+			let tags = [];
+			for (var i=0; i< elms.length; i++){
+			    var o = {tag: elms[i].firstChild.nodeValue };
+			    tags.push(o);
 			}
-		    ctx.completions=tags;
-		    });}
-
+			pinsuggestcache[url]=tags;
+			// UI is better if I set the completions explicitly here.
+			ctx.completions=tags;
+		    });
+    }else{
+	ctx.completions=pinsuggestcache[url];
+    }
+}
+    
 function pinUpdateTags(){
     pinHttpsGet(pinurltags,[],pinTagData);
 }
