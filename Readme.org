@@ -18,4 +18,11 @@ bookmarking storage with service to Pinboard.in.
   This API token can be found on your settings/password page.  For
   more, see [[http://blog.pinboard.in/2012/07/api_authentication_tokens/][this blog post]].
 
+  In your settings file, simply put:
+
+: set pintaboardToken="<YourTokenHere>"
+
 * Usage
+
+  By default, it overrides the 'a' command for bookmarking. That means
+  you can use it as you normally would with Pentadactyl bookmarking.
