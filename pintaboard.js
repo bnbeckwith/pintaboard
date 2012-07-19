@@ -129,6 +129,16 @@ function pinUpdateTags(){
     pinHttpsGet(pinurltags,[],pinTagData);
 }
 
+function pinStoredTagData(ctx){
+    if(pintags==null){
+	pinUpdateTags();
+	ctx.completions = pintags;
+    }else{
+	ctx.completions = pintags;
+    }
+}
+
+
 function pinCompleteBookmark(context, args){
     if(!args.bang){
 	context.title = ["Page URL"];
@@ -176,7 +186,7 @@ function pinStoredTags(ctx, args){
     ctx.message     = "Stored Tags";
     ctx.title       = ["Stored Tags", "Count"];
     ctx.keys        = { text: "tag", description: "count" };
-    ctx.completions = pintags;
+    pinStoredTagData(ctx);
     return;    
 }
 
@@ -228,8 +238,6 @@ function initPintaboard() {
     group.mappings.add(config.browserModes, [options['pintaboardKey']],
 		       "Open a prompt to bookmark the current page with Pinboard",
 		       function () {
-			   if(pintags == null)
-			       pinUpdateTags();
 			   let options = {};
 			   
 			   let url = buffer.uri.spec;
@@ -243,9 +251,6 @@ function initPintaboard() {
 				     options: options,
 				     arguments: [buffer.uri.spec] }));
 		       });
-    // I don't know if there is a better way to update the tags, but I
-    // just call this once at the beginning.
-    pinUpdateTags();
 }
 
 // Initialize the plugin
