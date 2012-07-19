@@ -61,15 +61,19 @@ group.options.add(["pintaboardURL"],
 	    "string","api.pinboard.in");
 group.options.add(["pintaboardToken"],
 	    "Token for pintaboard",
-	    "string", "");
+	    "string", '');
 group.options.add(["pintaboardKey"],
 		  "Key for storing a pinboard link",
 		  "string", "a")
 		  
 function pinHttpsGet(path, opts, callback){
     opts.push( "auth_token=" + options['pintaboardToken']);
+    if(options['pintaboardToken'] == ''){
+	util.dactyl.log("Error: pintaboardToken not set", 1);
+	return null;
+    }
     let req = 'https://' + options['pintaboardURL'] + path + "?" + opts.join('&');
-    try {
+     try {
 	let xmlhttp = services.Xmlhttp();
 	if (callback)
 	    xmlhttp.onreadystatechange = function () {
