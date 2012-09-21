@@ -1,5 +1,5 @@
 Pintaboard is a plugin for [[http://5digits.org/pentadactyl/][Pentadactyl]] that replaces the build-in
-bookmarking storage with service to Pinboard.in.
+bookmarking storage with service to [[Pinboard.in]].
 
 
 * Installation
@@ -8,7 +8,7 @@ bookmarking storage with service to Pinboard.in.
 
 : Install these plugins by copying them to the  ~/.pentadactyl/plugins/ directory
 : (or %USERPROFILE%\pentadactyl\plugins on Windows).
-
+  
 * Setup
 
   The setup is simple at this point. First, install the plugin as
@@ -24,5 +24,6 @@ bookmarking storage with service to Pinboard.in.
 
 * Usage
 
-  By default, it overrides the 'a' command for bookmarking. That means
-  you can use it as you normally would with Pentadactyl bookmarking.
+  By default, it overrides the =a= shortcut for bookmarking. That
+  means you can use it as you normally would with Pentadactyl
+  bookmarking.
