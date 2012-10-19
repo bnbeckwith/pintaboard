@@ -20,6 +20,7 @@ bookmarking storage with service to [[Pinboard.in]].
 
   In your settings file, simply put:
 
+: loadplugins '\.(js|penta)$'
 : set pintaboardToken="<YourTokenHere>"
 
 * Usage
