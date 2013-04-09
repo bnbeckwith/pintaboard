@@ -1,60 +1,49 @@
 /* use strict */
-XML.ignoreWhitespace = false;
-XML.prettyPrinting = false;
 var INFO =
-<plugin name="pintaboard" version="1.2"
-        href="http://bnbeckwith.com/"
-        summary="Pinboard bookmark storage"
-        xmlns={NS}>
-    <author email="bnbeckwith@gmail.com">Benjamin Beckwith</author>
-    <license href="http://opensource.org/licenses/mit-license.php">MIT</license>
-    <project name="Pentadactyl" minVersion="1.0"/>
-    <p>
-       This plugin allows for storing bookmarks through the <a href="http://pinboard.in/api/">pinboard api</a>.
-    </p>
-    <p>This file is installed in ~/pentadactyl/plugins. 
-       The user (likely, you) would then setup the password and username in your top-level customizations file.
-    </p>
-    <item>
-      <tags>'pintaboardURL'</tags>
-      <spec>'pintaboardURL'</spec>
-      <type>string</type>
-      <default>api.pinboard.in</default>
-      <description>
-        <p>
-          This is the URL to use for the base of the Delicious API calls. Pinboard uses Version 1 of the API.
-        </p>
-      </description>
-    </item>
-    <item>
-      <tags>'pintaboardToken'</tags>
-      <spec>'pintaboardToken'</spec>
-      <type>string</type>
-      <default></default>
-      <description>
-        <p>
-          This is the API token found on your <a href="https://pinboard.in/settings/password">pinboard settings/password</a> page.
-        </p>
-      </description>
-    </item>
-    <item>
-      <tags>'pintaboardKey'</tags>
-      <spec>'pintaboardKey'</spec>
-      <type>url</type>
-      <default>'a'</default>
-      <description>
-        <p>
-          This is the key to use for launching :pinbookmark. Note that the default will override the built-in bookmark shortcut.
-        </p>
-      </description>
-    </item>
-</plugin>;
+["plugin", {name: "pintaboard",
+	    version: "1.2",
+            href: "http://bnbeckwith.com/",
+            summary: "Pinboard bookmark storage",
+            xmlns: "dactyl"},
+ ["author", {email:"bnbeckwith@gmail.com"}, "Benjamin Beckwith"],
+ ["license",{href:"http://opensource.org/licenses/mit-license.php"}, "MIT"],
+ ["project",{name:"Pentadactyl", "min-version":"1.0"}],
+ ["p", {},
+  "This plugin allows for storing bookmarks through the <a href=\"http://pinboard.in/api/\">pinboard api</a>."],
+ ["p", {}, 
+  "This file is installed in ~/pentadactyl/plugins.",
+  "The user (likely, you) would then setup the password and username in your top-level customizations file."],
+ ["item", {},
+  ["tags", {}, "'pintaboardURL'"],
+  ["spec", {}, "'pintaboardURL'"],
+  ["type", {}, "string"],
+  ["default", {}, "api.pinboard.in"],
+  ["description", {},
+   ["p", {}, 
+    "This is the URL to use for the base of the Delicious API calls. Pinboard uses Version 1 of the API."]]],
+ ["item", {},
+  ["tags", {}, "'pintaboardToken'"],
+  ["spec",{}, "'pintaboardToken'"],
+  ["type", {}, "string"],
+  ["default", {}, ""],
+  ["description", {},
+   ["p", {},
+    "This is the API token found on your <a href=\"https://pinboard.in/settings/password\">pinboard settings/password</a> page."]]],
+ ["item", {}, 
+  ["tags", {}, "'pintaboardKey'"],
+  ["spec", {}, "'pintaboardKey'"],
+  ["type", {}, "string"],
+  ["default", {}, "'a'"],
+  ["description", {},
+   ["p", {},
+    "This is the key to use for launching :pinbookmark. Note that the default will override the built-in bookmark shortcut."]]]];
 
 let pintags = null;
 let pinsuggestcache = [];
 let pinurladd     = "/v1/posts/add";
 let pinurltags    = "/v1/tags/get";
 let pinurlsuggest = "/v1/posts/suggest";
+let pinurlget     = "/v1/posts/get";
 
 group.options.add(["pintaboardURL"],
 	    "Base url for Pintaboard",
@@ -252,6 +241,14 @@ function initPintaboard() {
 				     arguments: [buffer.uri.spec] }));
 		       });
 }
+
+
+// function pinPageLoaded(){
+//     alert("Page loaded:"+buffer.uri.spec);
+// }
+
+// group.autocmd.add(["PageLoad"],"*",pinPageLoaded);
+
 
 // Initialize the plugin
 initPintaboard();
