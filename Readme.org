@@ -28,3 +28,44 @@ bookmarking storage with service to [[Pinboard.in]].
   By default, it overrides the =a= shortcut for bookmarking. That
   means you can use it as you normally would with Pentadactyl
   bookmarking.
+
+  The actual command called is =:pinbookmark= which takes one main
+  argument -- the URL.  However, there are trhee options that it also
+  takes.
+
+  | Option | Value                        |
+  |--------+------------------------------|
+  | -desc  | Text string                  |
+  | -tags  | Comma-separated list of tags |
+  | -title | Page title                   |
+  
+
+  By default, the =a= key is mapped to run someting like the
+  following:
+
+: :pinbookmark -title='Current Page Title' http://URL
+
+** Tags
+
+   To add tags, type =a= and then a space followed by =-tags==. There
+   is some tab-completion in pentadactyl that will shorten this
+   behavior.
+
+   Once you hit the trailing equals, there will be some suggested
+   tags or stored tags available for completion. Tab-completion works
+   here also.
+
+   The only problem is that tags cannot contain spaces, but I'm not
+   sure you would want multi-word tags anyhow.
+
+** Description
+
+   Like the other options, =-desc== lets you pass in a string (with
+   quotes) describing the link. This maps to the description field in pinboard.
+
+** Title
+
+   This is not necessary to add if you are using the built-in
+   shortcut. But, useful to know if the page title is not what you
+   want to store in pinboard. The text here becomes the text for the
+   link stored.
