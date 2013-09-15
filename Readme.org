@@ -30,7 +30,7 @@ bookmarking storage with service to [[Pinboard.in]].
   bookmarking.
 
   The actual command called is =:pinbookmark= which takes one main
-  argument -- the URL.  However, there are trhee options that it also
+  argument -- the URL.  However, there are several options that it also
   takes.
 
   | Option | Value                          |
