@@ -33,13 +33,13 @@ bookmarking storage with service to [[Pinboard.in]].
   argument -- the URL.  However, there are trhee options that it also
   takes.
 
-  | Option | Value                        |
-  |--------+------------------------------|
-  | -desc  | Text string                  |
-  | -tags  | Comma-separated list of tags |
-  | -title | Page title                   |
-  | -shared| shared or private            |
-  | -toread| set as unread                |
+  | Option | Value                          |
+  |--------+--------------------------------|
+  | -desc  | Text string                    |
+  | -tags  | Comma-separated list of tags   |
+  | -title | Page title                     |
+  | -shared| yes or no (default yes)        |
+  | -toread| yes or no (default no)         |
   
 
   By default, the =a= key is mapped to run someting like the
@@ -74,11 +74,11 @@ bookmarking storage with service to [[Pinboard.in]].
 
 ** Shared
 
-   To make private, set =-shared== with a no, otherwise it'll be public.
+   To make private, use =-shared=no=, otherwise it'll be public. 
 
 ** Toread
 
-   Not needed, but will allow setting as unread using =-toread==yes. Use with a 
+   Not needed, but will allow setting as unread using =-toread=yes=. Use with a 
    mapping to allow for quick marking for later reading; e.g.:
     
-    map -ex gR :pinbookmark -toread=yes
+:  :map -ex gR :pinbookmark -toread=yes
