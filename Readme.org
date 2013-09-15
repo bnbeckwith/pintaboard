@@ -38,6 +38,8 @@ bookmarking storage with service to [[Pinboard.in]].
   | -desc  | Text string                  |
   | -tags  | Comma-separated list of tags |
   | -title | Page title                   |
+  | -shared| shared or private (yes|no)   |
+  | -toread| set as unread  (yes|no)      |
   
 
   By default, the =a= key is mapped to run someting like the
@@ -69,3 +71,14 @@ bookmarking storage with service to [[Pinboard.in]].
    shortcut. But, useful to know if the page title is not what you
    want to store in pinboard. The text here becomes the text for the
    link stored.
+
+** Shared
+
+   To make private, set =-shared== with a no, otherwise it'll be public.
+
+** Toread
+
+   Not needed, but will allow setting as unread using =-toread==yes. Use with a 
+   mapping to allow for quick marking for later reading; e.g.:
+    
+    map -ex gR :pinbookmark -toread=yes
