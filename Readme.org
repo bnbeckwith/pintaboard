@@ -38,8 +38,8 @@ bookmarking storage with service to [[Pinboard.in]].
   | -desc  | Text string                  |
   | -tags  | Comma-separated list of tags |
   | -title | Page title                   |
-  | -shared| shared or private (yes|no)   |
-  | -toread| set as unread  (yes|no)      |
+  | -shared| shared or private (yes\|no) |
+  | -toread| set as unread  (yes\|no)    |
   
 
   By default, the =a= key is mapped to run someting like the
