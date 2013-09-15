@@ -78,7 +78,8 @@ bookmarking storage with service to [[Pinboard.in]].
 
 ** Toread
 
-   Not needed, but will allow setting as unread using =-toread=yes=. Use with a 
-   mapping to allow for quick marking for later reading; e.g.:
+   Not needed, but will allow setting as unread using =-toread=yes=. A 'mark as unread' 
+   link will be shown next to the bookmark at pinboard, allowing to quickly mark a bookmark
+   as read with one click. Use with a mapping to allow for quick marking for later reading; e.g.:
     
 :  :map -ex gR :pinbookmark -toread=yes
