@@ -30,14 +30,16 @@ bookmarking storage with service to [[Pinboard.in]].
   bookmarking.
 
   The actual command called is =:pinbookmark= which takes one main
-  argument -- the URL.  However, there are trhee options that it also
+  argument -- the URL.  However, there are several options that it also
   takes.
 
-  | Option | Value                        |
-  |--------+------------------------------|
-  | -desc  | Text string                  |
-  | -tags  | Comma-separated list of tags |
-  | -title | Page title                   |
+  | Option | Value                          |
+  |--------+--------------------------------|
+  | -desc  | Text string                    |
+  | -tags  | Comma-separated list of tags   |
+  | -title | Page title                     |
+  | -shared| yes or no (default yes)        |
+  | -toread| yes or no (default no)         |
   
 
   By default, the =a= key is mapped to run someting like the
@@ -69,3 +71,15 @@ bookmarking storage with service to [[Pinboard.in]].
    shortcut. But, useful to know if the page title is not what you
    want to store in pinboard. The text here becomes the text for the
    link stored.
+
+** Shared
+
+   To make private, use =-shared=no=, otherwise it'll be public. 
+
+** Toread
+
+   Not needed, but will allow setting as unread using =-toread=yes=. A 'mark as unread' 
+   link will be shown next to the bookmark at pinboard, allowing to quickly mark a bookmark
+   as read with one click. Use with a mapping to allow for quick marking for later reading; e.g.:
+    
+:  :map -ex gR :pinbookmark -toread=yes

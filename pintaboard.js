@@ -143,12 +143,16 @@ function pinAddBookmark(args) {
     let opts = {
 	desc: args["-desc"] || "",
 	tags: args["-tags"] || [],
+	toread: args["-toread"] || "", 
+	shared: args["-shared"] || "", 
 	title: args["-title"] || (args.length === 0 ? buffer.title : null),
 	url: args.length === 0 ? buffer.URL: args[0]
     };
     let urlopts = ["url=" + encodeURIComponent(opts['url']),
 		   "description=" + encodeURIComponent(opts['title']),
 		   "tags=" + encodeURIComponent(opts['tags'].join(" ")),
+		   "toread=" + encodeURIComponent(opts['toread']),
+		   "shared=" + encodeURIComponent(opts['shared']),
 		   "extended=" + encodeURIComponent(opts['desc'])];
 
     pinHttpsGet(pinurladd,
@@ -213,12 +217,25 @@ function initPintaboard() {
 	type: CommandOption.STRING
     };
 
+    const pintoreadarg = {
+	names: ["-toread", "-r"],
+	description: "Bookmark toread",
+	type: CommandOption.STRING
+    };
+    
+    const pinsharedarg = {
+	names: ["-shared", "-s"],
+	description: "Bookmark shared",
+	type: CommandOption.STRING
+    };
+
+
     group.commands.add(['pinbookmark','pb'],
 		       "Add bookmarks to pinboard",
 		       pinAddBookmark,
 		       {   argCount: "?",
 			   bang: true,
-			   options: [pintagarg, pintitlearg, pindescriptionarg],
+			   options: [pintagarg, pintitlearg, pindescriptionarg, pintoreadarg, pinsharedarg],
 			   completer: pinCompleteBookmark,
 			   privateData: true 
 		       },
