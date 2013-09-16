@@ -96,9 +96,11 @@ function pinSuggestTagData(ctx, url){
     // time This is really just so that when I type and get
     // suggestions, I am not hammering the pinboard api.
     if(pinsuggestcache[url]==undefined){
+        ctx.incomplete = true;
 	pinHttpsGet(pinurlsuggest,
 		    ["url=" + encodeURIComponent(url)],
 		    function(xmlhttp){
+                        ctx.incomplete = false;
 			let elms = xmlhttp.responseXML.getElementsByTagName("recommended");
 			let tags = [];
 			for (var i=0; i< elms.length; i++){
@@ -107,23 +109,31 @@ function pinSuggestTagData(ctx, url){
 			}
 			pinsuggestcache[url]=tags;
 			// UI is better if I set the completions explicitly here.
-			ctx.completions=tags;
+			ctx.completions = ctx.result = tags;
 		    });
     }else{
 	ctx.completions=pinsuggestcache[url];
     }
 }
-    
-function pinUpdateTags(){
-    pinHttpsGet(pinurltags,[],pinTagData);
+
+function pinUpdateTags(ctx){
+        pinHttpsGet(pinurltags,[],
+                    function(xmlhttp){
+                        pinTagData(xmlhttp);
+                        if(typeof ctx !== "undefined"){
+                            ctx.incomplete = false;
+                        }
+                    });
 }
 
 function pinStoredTagData(ctx){
     if(pintags==null){
-	pinUpdateTags();
+        ctx.incomplete = true;
+	pinUpdateTags(ctx);
 	ctx.completions = pintags;
     }else{
 	ctx.completions = pintags;
+        ctx.incomplete = false;
     }
 }
 
