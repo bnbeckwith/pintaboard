@@ -10,7 +10,7 @@ var INFO =
  ["project",{name:"Pentadactyl", "min-version":"1.0"}],
  ["p", {},
   "This plugin allows for storing bookmarks through the <a href=\"http://pinboard.in/api/\">pinboard api</a>."],
- ["p", {}, 
+ ["p", {},
   "This file is installed in ~/pentadactyl/plugins.",
   "The user (likely, you) would then setup the password and username in your top-level customizations file."],
  ["item", {},
@@ -19,7 +19,7 @@ var INFO =
   ["type", {}, "string"],
   ["default", {}, "api.pinboard.in"],
   ["description", {},
-   ["p", {}, 
+   ["p", {},
     "This is the URL to use for the base of the Delicious API calls. Pinboard uses Version 1 of the API."]]],
  ["item", {},
   ["tags", {}, "'pintaboardToken'"],
@@ -29,7 +29,7 @@ var INFO =
   ["description", {},
    ["p", {},
     "This is the API token found on your <a href=\"https://pinboard.in/settings/password\">pinboard settings/password</a> page."]]],
- ["item", {}, 
+ ["item", {},
   ["tags", {}, "'pintaboardKey'"],
   ["spec", {}, "'pintaboardKey'"],
   ["type", {}, "string"],
@@ -54,7 +54,7 @@ group.options.add(["pintaboardToken"],
 group.options.add(["pintaboardKey"],
 		  "Key for storing a pinboard link",
 		  "string", "a")
-		  
+
 function pinHttpsGet(path, opts, callback){
     opts.push( "auth_token=" + options['pintaboardToken']);
     if(options['pintaboardToken'] == ''){
@@ -153,23 +153,33 @@ function pinAddBookmark(args) {
     let opts = {
 	desc: args["-desc"] || "",
 	tags: args["-tags"] || [],
-	toread: args["-toread"] || "", 
-	shared: args["-shared"] || "", 
+	toread: args["-toread"] || false,
+	shared: args["-shared"] || false,
+	private: args["-private"] || false,
 	title: args["-title"] || (args.length === 0 ? buffer.title : null),
 	url: args.length === 0 ? buffer.URL: args[0]
     };
     let urlopts = ["url=" + encodeURIComponent(opts['url']),
 		   "description=" + encodeURIComponent(opts['title']),
 		   "tags=" + encodeURIComponent(opts['tags'].join(" ")),
-		   "toread=" + encodeURIComponent(opts['toread']),
-		   "shared=" + encodeURIComponent(opts['shared']),
 		   "extended=" + encodeURIComponent(opts['desc'])];
+
+    // Private vs. Shared -- private wins.
+    if (opts['private']){
+	urlopts.push("shared=no");
+    }else if (opts['shared']){
+        urlopts.push("shared=yes");
+    }
+
+    if (opts['toread'] != ""){
+        urlopts.push("toread=yes");
+    }
 
     pinHttpsGet(pinurladd,
 		urlopts,
 		function (xmlhttp) {
 		    dactyl.echomsg(
-			{ domains: [util.getHost(opts.url)], 
+			{ domains: [util.getHost(opts.url)],
 			  message: "Added bookmark: " + opts.url
 			}, 1, commandline.FORCE_SINGLELINE);
 		    pinUpdateTags(); });
@@ -190,7 +200,7 @@ function pinStoredTags(ctx, args){
     ctx.title       = ["Stored Tags", "Count"];
     ctx.keys        = { text: "tag", description: "count" };
     pinStoredTagData(ctx);
-    return;    
+    return;
 }
 
 function pinCompleteTags(ctx, args){
@@ -205,10 +215,10 @@ function initPintaboard() {
     const pintagarg = {
 	names: ["-tags", "-T"],
 	description: "A comma-separated list of tags",
-	completer: pinCompleteTags, 
+	completer: pinCompleteTags,
 	type: CommandOption.LIST
     };
-    
+
     const pintitlearg = {
 	names: ["-title","-t"],
 	description: "Bookmark page title",
@@ -229,25 +239,30 @@ function initPintaboard() {
 
     const pintoreadarg = {
 	names: ["-toread", "-r"],
-	description: "Bookmark toread",
-	type: CommandOption.STRING
-    };
-    
-    const pinsharedarg = {
-	names: ["-shared", "-s"],
-	description: "Bookmark shared",
-	type: CommandOption.STRING
+	description: "Mark bookmark \"to-read\"",
+	type: CommandOption.NOARG
     };
 
+    const pinsharedarg = {
+	names: ["-shared", "-s"],
+	description: "Mark bookmark shared",
+	type: CommandOption.NOARG
+    };
+
+    const pinprivatearg = {
+        names: ["-private", "-p"],
+        description: "Mark boomark private",
+        type: CommandOption.NOARG
+    };
 
     group.commands.add(['pinbookmark','pb'],
 		       "Add bookmarks to pinboard",
 		       pinAddBookmark,
 		       {   argCount: "?",
 			   bang: true,
-			   options: [pintagarg, pintitlearg, pindescriptionarg, pintoreadarg, pinsharedarg],
+			   options: [pintagarg, pintitlearg, pindescriptionarg, pintoreadarg, pinsharedarg, pinprivatearg],
 			   completer: pinCompleteBookmark,
-			   privateData: true 
+			   privateData: true
 		       },
 		      true);
 
@@ -255,12 +270,12 @@ function initPintaboard() {
 		       "Open a prompt to bookmark the current page with Pinboard",
 		       function () {
 			   let options = {};
-			   
+
 			   let url = buffer.uri.spec;
-			   
+
 			   if(buffer.title != buffer.uri.spec)
 			       options["-title"] = buffer.title;
-			   
+
 			   CommandExMode().open(
 			       commands.commandToString(
 				   { command: "pinbookmark",

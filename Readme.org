@@ -1,14 +1,14 @@
 Pintaboard is a plugin for [[http://5digits.org/pentadactyl/][Pentadactyl]] that replaces the build-in
-bookmarking storage with service to [[Pinboard.in]].
+bookmarking storage with service to [[http://pinboard.in][Pinboard.in]].
 
 
 * Installation
 
-  From [[http://5digits.org/pentadactyl/plugins][the pentadactyl plugin page]]: 
+  From [[http://5digits.org/pentadactyl/plugins][the pentadactyl plugin page]]:
 
 : Install these plugins by copying them to the  ~/.pentadactyl/plugins/ directory
 : (or %USERPROFILE%\pentadactyl\plugins on Windows).
-  
+
 * Setup
 
   The setup is simple at this point. First, install the plugin as
@@ -33,14 +33,15 @@ bookmarking storage with service to [[Pinboard.in]].
   argument -- the URL.  However, there are several options that it also
   takes.
 
-  | Option | Value                          |
-  |--------+--------------------------------|
-  | -desc  | Text string                    |
-  | -tags  | Comma-separated list of tags   |
-  | -title | Page title                     |
-  | -shared| yes or no (default yes)        |
-  | -toread| yes or no (default no)         |
-  
+  | Option   | Value                        |
+  |----------+------------------------------|
+  | -desc    | Text string                  |
+  | -tags    | Comma-separated list of tags |
+  | -title   | Page title                   |
+  | -shared  |                              |
+  | -private |                              |
+  | -toread  |                              |
+
 
   By default, the =a= key is mapped to run someting like the
   following:
@@ -72,14 +73,28 @@ bookmarking storage with service to [[Pinboard.in]].
    want to store in pinboard. The text here becomes the text for the
    link stored.
 
-** Shared
+** To Read
 
-   To make private, use =-shared=no=, otherwise it'll be public. 
+   Not needed, but will allow setting a bookmark as unread. A 'mark as
+   unread' link will be shown next to the bookmark at pinboard,
+   allowing to quickly mark a bookmark as read with one click. Use
+   with a mapping to allow for quick marking for later reading; e.g.:
 
-** Toread
+:  :map -ex gR :pinbookmark -toread
 
-   Not needed, but will allow setting as unread using =-toread=yes=. A 'mark as unread' 
-   link will be shown next to the bookmark at pinboard, allowing to quickly mark a bookmark
-   as read with one click. Use with a mapping to allow for quick marking for later reading; e.g.:
-    
-:  :map -ex gR :pinbookmark -toread=yes
+** Shared/Private
+
+   Links can be either shared or private. The default depends on the
+   user's settings on the privacy tab.
+
+   When the =-shared= flag is used, it forces this bookmark to become
+   public. Likewise, for =-private= the bookmark is private.
+
+   Should you mistakenly provide both flags, privacy wins and the
+   bookmark will be private.
+
+   Additionally, if you use Pinboard's Privacy Lock feature, the =-shared=
+   option will never work.  All bookmarks will remain private.
+
+
+
