@@ -142,10 +142,11 @@ function pinCompleteBookmark(context, args){
     if(!args.bang){
 	      context.title = ["Page URL"];
 	      let frames = buffer.allFrames();
-	      context.completions = [
-	          [win.document.documentURI, frames.length == 1 ? "Current Location" : "Frame: " + win.document.title]
-	                             for ([, win] in Iterator(frames))];
-	      return;
+	      context.completions =
+            frames.map(win => [win.document.documentURI,
+                               frames.length == 1
+                               ? "Current Location"
+                               : "Frame: " + win.document.title]);
     }
 }
 
@@ -224,9 +225,10 @@ function initPintaboard() {
 	      description: "Bookmark page title",
 	      completer: function description(context, args){
 	          let frames = buffer.allFrames();
-	          return [
-		            [win.document.title, frames.length ==1 ? "Current Location" : "Frame: " + win.location.href]
-		                for([, win] in Iterator(frames))];
+	          return frames.map(win => [win.document.title,
+                                      frames.length == 1
+                                      ? "Current Location"
+                                      : "Frame " + win.location.href]);
 	      },
 	      type: CommandOption.STRING
     };
